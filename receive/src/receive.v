@@ -1,6 +1,6 @@
 module receive (
-    input wire i_clk,
-    input wire uart_rx,
+    input i_clk,
+    input uart_rx,
     output LED1,
     output LED2,
     output LED3,
@@ -8,24 +8,21 @@ module receive (
     output LED5
 );
     
-    reg D = 1'b0;
     reg Q = 1'b0;
-    // Declare received_str as an 88-bit vector (11 bytes)
-    reg [8*11-1:0] received_str;
+    wire [7:0] received_str;
     wire valid;
 
     uart_rx my_uart (
         .clk(i_clk),
         .uart_rx(uart_rx),
-        .data(received_str),
-        .valid(valid)
+        .valid(valid),
+        .data(received_str)
     );
 
     always @(posedge i_clk) begin
         if (valid) begin
-            D <= ~Q;
+            Q <= ~Q;
         end
-        Q <= D;
     end
 
     assign LED1 = Q;
