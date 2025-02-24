@@ -23,10 +23,10 @@ def on_button_clicked(b):
 
         # Determine new state based on color
         if b.style.button_color == 'lightgray':
-            if b.description == "LED 3":
-                b.style.button_color = 'lightcoral'
-            else:
+            if b.description == "LED 1":
                 b.style.button_color = 'lightgreen'  # ON state
+            else:
+                b.style.button_color = 'lightcoral'  # ON state
             state = "ON"
         else:
             b.style.button_color = 'lightgray'  # OFF state
