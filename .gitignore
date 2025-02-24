@@ -1,3 +1,5 @@
+myenv/
+venv/
 build/
 *.json
 *.bin
