@@ -4,3 +4,16 @@ build/
 *.json
 *.bin
 *.log
+
+# Icarus Verilog output files
+*.vvp        # Compiled simulation file from iverilog
+*.vcd        # Waveform dump files
+*.lxt*       # GTKWave LXT waveform files
+*.fst        # Fast waveform format for GTKWave
+*.out        # Common output file from vvp (if used)
+
+# Optional: simulation logs or temp files
+*.log
+*.txt
+*.dump
+
