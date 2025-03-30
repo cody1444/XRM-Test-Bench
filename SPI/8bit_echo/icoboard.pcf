@@ -1,4 +1,0 @@
-set_io sclk H11
-set_io cs D4
-set_io mosi A6
-set_io miso A7
