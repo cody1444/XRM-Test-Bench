@@ -8,4 +8,26 @@ module spi_rx #(
 	output reg byte_ready
 );
 
+	reg [WIDTH-1:0] shift_reg;
+	reg [2:0] bit_count;
+
+	always @(negedge sclk) begin
+		if (cs) begin
+			shift_reg <= 0;
+			bit_count <= 0;
+			byte_ready <= 0;
+		end else begin
+			shift_reg <= {shift_reg[WIDTH-2:0], mosi};
+			bit_count <= bit_count + 1;
+
+			if (bit_count == (WIDTH - 1)) begin
+				byte_ready <= 1;
+			end else begin
+				byte_ready <= 0;
+			end
+		end
+	end
+
+	assign command_byte = shift_reg;
+
 endmodule
