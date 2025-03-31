@@ -1,0 +1,101 @@
+$date
+	Sun Mar 30 16:13:40 2025
+$end
+$version
+	Icarus Verilog
+$end
+$timescale
+	1ps
+$end
+$scope module pin_controller_tb $end
+$var wire 64 ! output_pins [63:0] $end
+$var reg 1 " clk $end
+$var reg 1 # toggle_enable $end
+$var reg 64 $ toggle_mask [63:0] $end
+$scope module uut $end
+$var wire 1 " clk $end
+$var wire 1 # toggle_enable $end
+$var wire 64 % toggle_mask [63:0] $end
+$var reg 64 & output_pins [63:0] $end
+$upscope $end
+$scope task toggle_pin $end
+$var reg 6 ' pin_index [5:0] $end
+$upscope $end
+$upscope $end
+$enddefinitions $end
+#0
+$dumpvars
+bx '
+b0 &
+b0 %
+b0 $
+0#
+0"
+b0 !
+$end
+#10000
+1"
+#20000
+0"
+1#
+b1 $
+b1 %
+b0 '
+#30000
+b1 !
+b1 &
+1"
+#31000
+b1000 $
+b1000 %
+b11 '
+1#
+#40000
+0"
+#50000
+b1001 !
+b1001 &
+1"
+#51000
+b1 $
+b1 %
+b0 '
+1#
+#60000
+0"
+#70000
+b1000 !
+b1000 &
+1"
+#71000
+b1000000000000000000000000000000000000000000000000000000000000000 $
+b1000000000000000000000000000000000000000000000000000000000000000 %
+b111111 '
+1#
+#80000
+0"
+#90000
+b1000000000000000000000000000000000000000000000000000000000001000 !
+b1000000000000000000000000000000000000000000000000000000000001000 &
+1"
+#91000
+1#
+#100000
+0"
+#110000
+b1000 !
+b1000 &
+1"
+#111000
+0#
+#120000
+0"
+#130000
+1"
+#140000
+0"
+#150000
+1"
+#160000
+0"
+#161000

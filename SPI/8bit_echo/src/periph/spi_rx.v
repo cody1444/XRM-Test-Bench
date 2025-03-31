@@ -1,5 +1,5 @@
 module spi_rx #(
-	parameter WIDTH = 8;
+parameter WIDTH = 8
 )(
 	input wire sclk,
 	input wire cs,
@@ -12,20 +12,20 @@ module spi_rx #(
 	reg [2:0] bit_count;
 
 	always @(negedge sclk) begin
-		if (cs) begin
-			shift_reg <= 0;
-			bit_count <= 0;
-			byte_ready <= 0;
-		end else begin
-			shift_reg <= {shift_reg[WIDTH-2:0], mosi};
-			bit_count <= bit_count + 1;
+		shift_reg <= {shift_reg[WIDTH-2:0], mosi};
+		bit_count <= bit_count + 1;
 
-			if (bit_count == (WIDTH - 1)) begin
-				byte_ready <= 1;
-			end else begin
-				byte_ready <= 0;
-			end
+		if (bit_count == (WIDTH - 1)) begin
+			byte_ready <= 1;
+		end else begin
+			byte_ready <= 0;
 		end
+	end
+
+	always @(posedge cs) begin
+		shift_reg <= 0;
+		bit_count <= 0;
+		byte_ready <= 0;
 	end
 
 	assign command_byte = shift_reg;

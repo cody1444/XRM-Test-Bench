@@ -1,0 +1,76 @@
+$date
+	Sun Mar 30 15:27:45 2025
+$end
+$version
+	Icarus Verilog
+$end
+$timescale
+	1ps
+$end
+$scope module decoder_tb $end
+$var wire 64 ! toggle_mask [63:0] $end
+$var reg 1 " byte_ready $end
+$var reg 8 # command_byte [7:0] $end
+$scope module uut $end
+$var wire 1 " byte_ready $end
+$var wire 8 $ command_byte [7:0] $end
+$var reg 64 % toggle_mask [63:0] $end
+$upscope $end
+$scope task test_command $end
+$var reg 8 & cmd [7:0] $end
+$upscope $end
+$upscope $end
+$enddefinitions $end
+#0
+$dumpvars
+bx &
+bx %
+b0 $
+b0 #
+0"
+bx !
+$end
+#5000
+b1 !
+b1 %
+1"
+b0 &
+#6000
+0"
+#7000
+b10 !
+b10 %
+1"
+b1 #
+b1 $
+b1 &
+#8000
+0"
+#9000
+b1000000000000000000000000000000000000000000000000000000000000000 !
+b1000000000000000000000000000000000000000000000000000000000000000 %
+1"
+b111111 #
+b111111 $
+b111111 &
+#10000
+0"
+#11000
+b10000000000000000000000000000000000000 !
+b10000000000000000000000000000000000000 %
+1"
+b10100101 #
+b10100101 $
+b10100101 &
+#12000
+0"
+#13000
+b1000000000000000000000000000000000000000000000000000000000000000 !
+b1000000000000000000000000000000000000000000000000000000000000000 %
+1"
+b11111111 #
+b11111111 $
+b11111111 &
+#14000
+0"
+#25000
