@@ -3,7 +3,7 @@ module top (
     input wire SCLK,		// SPI clock
     input wire  CS,		// Chip select (active low)
     input wire MOSI,		// Ctlr Out, Periph In
-    output wire [63:0] pins,	// Icoboard output pins
+    output wire [63:0] pins	// Icoboard output pins
 );
 
     wire [7:0] COMMAND_BYTE;

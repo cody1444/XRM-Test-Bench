@@ -10,6 +10,7 @@ module pin_controller (
 	always @(posedge clk) begin
 		if (toggle_enable) begin
 			output_pins <= output_pins ^ toggle_mask;
+			$display("pin_controller: Toggling output_pins <= %b", output_pins ^ toggle_mask);
 		end
 	end
 

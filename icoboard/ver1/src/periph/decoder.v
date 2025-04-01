@@ -6,6 +6,7 @@ module decoder (
 
 	always @(posedge byte_ready) begin
 		toggle_mask <= 64'b1 << command_byte[5:0];
+		$display("decoder: command_byte = %h, toggle_mask = %b", command_byte, 64'b1 << command_byte[5:0]);
 	end
 
 endmodule

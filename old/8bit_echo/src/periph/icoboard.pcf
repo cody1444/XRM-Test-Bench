@@ -1,0 +1,7 @@
+set_io CLK H11
+set_io CS D4
+set_io MOSI A6
+set_io PIN_P1_B11 B11
+set_io PIN_P1_B9 B9
+set_io PIN_P1_D8 D8
+
