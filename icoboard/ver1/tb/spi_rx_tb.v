@@ -27,7 +27,6 @@ module spi_rx_tb;
     task send_spi_byte(input [7:0] data);
         integer i;
         begin
-	    cs = 0;
 	    #5;
 	    
             for (i = 7; i >= 0; i = i - 1) begin
@@ -40,8 +39,6 @@ module spi_rx_tb;
             end
 
 	    sclk = 0;
-	    #10
-	    cs = 1;
 	    #20;
         end
     endtask
@@ -54,6 +51,7 @@ module spi_rx_tb;
 	
 	cs = 1;
 	#40;
+	cs = 0;
 
         // Send first byte: 0xA5
         send_spi_byte(8'hA5);
@@ -61,6 +59,9 @@ module spi_rx_tb;
 
 	// Send first byte: 0xB3
         send_spi_byte(8'hB3);
+	#40;
+
+	cs = 1;
 	#40;
 
         $display("Test complete");

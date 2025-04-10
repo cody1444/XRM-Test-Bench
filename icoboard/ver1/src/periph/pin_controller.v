@@ -6,12 +6,14 @@ module pin_controller (
 );
 
 	initial output_pins = 64'b0;
+	reg prev_toggle_enable;
 
 	always @(posedge clk) begin
-		if (toggle_enable) begin
+		if (~prev_toggle_enable && toggle_enable) begin
 			output_pins <= output_pins ^ toggle_mask;
 			$display("pin_controller: Toggling output_pins <= %b", output_pins ^ toggle_mask);
 		end
+		prev_toggle_enable <= toggle_enable;
 	end
 
 endmodule

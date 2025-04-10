@@ -28,7 +28,6 @@ module top_tb;
     task send_spi_byte(input [7:0] data);
         integer i;
         begin
-            CS = 0;
             #5;
 
             for (i = 7; i >= 0; i = i - 1) begin
@@ -41,9 +40,7 @@ module top_tb;
             end
 
 	    SCLK = 0;
-	    #20;
-            CS = 1;
-            #20;
+	    #40;
         end
     endtask
 
@@ -55,6 +52,7 @@ module top_tb;
         // Initialize inputs
         CS = 1;
         #40;
+	CS = 0;
 
         send_spi_byte(8'h00);   // Toggle pin 0 ON
 	#40;
@@ -69,8 +67,9 @@ module top_tb;
 	#40;
 	
         send_spi_byte(8'h3F);   // Toggle pin 63 OFF
-
-        #50;
+        #1000;
+	CS = 1;
+	#40;
         $display("Final pins = %b", pins);
         $finish;
     end
