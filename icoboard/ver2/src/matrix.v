@@ -1,13 +1,13 @@
 module matrix(
-	input RPI_IO1,
-	input RPI_IO2,
-	input RPI_IO3,
-	input RPI_IO6,
-	input RPI_IO7,
-	input RPI_IO8,
-	input RPI_IO9,
-	input RPI_IO1,
+	input [0:7] RPI_IO,
 	output [0:63] output_pin
 );
-	assign output_pin = 64'hFFFFFFFFFFFFFFFF;
+	assign output_pin[7:0] = RPI_IO;
+	assign output_pin[15:8] = RPI_IO;
+	assign output_pin[23:16] = RPI_IO;
+	assign output_pin[31:24] = RPI_IO;
+	assign output_pin[39:32] = RPI_IO;
+	assign output_pin[47:40] = RPI_IO;
+	assign output_pin[55:48] = RPI_IO;
+	assign output_pin[63:56] = RPI_IO;
 endmodule

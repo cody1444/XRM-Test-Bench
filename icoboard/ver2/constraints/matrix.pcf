@@ -1,13 +1,13 @@
 set_io clk_100mhz R9
 
-set_io RPI_IO1    D6
-set_io RPI_IO2    C6
-set_io RPI_IO3    C7
-set_io RPI_IO6    D4
-set_io RPI_IO7    D7
-set_io RPI_IO8    D9
-set_io RPI_IO9    C9
-set_io RPI_IO10   C10
+set_io RPI_IO[0]    D6
+set_io RPI_IO[1]    C6
+set_io RPI_IO[2]    C7
+set_io RPI_IO[3]    D4
+set_io RPI_IO[4]    D7
+set_io RPI_IO[5]    D9
+set_io RPI_IO[6]    C9
+set_io RPI_IO[7]   C10
 
 set_io pmod1_1    D8
 set_io pmod1_2    B9
