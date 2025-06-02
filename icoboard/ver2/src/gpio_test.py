@@ -5,16 +5,20 @@ import time
 GPIO.setmode(GPIO.BCM)
 #GPIO.setmode(GPIO.BOARD)
 
-chan_list = [18,22,23,7,19,16,20,21]
+# Set up GPIO pins
+chan_list = [18,22,23,7,19,16,20,21,24]
 
 for i in chan_list:
     GPIO.setup(i, GPIO.OUT)
 
 def write_byte(value):
     print(f"Sending: 0x{value:02X} -> {value:08b}")
-    for i,pin in enumerate(chan_list):
+    for i,pin in enumerate(chan_list[:-1]):
         print(f"Shift {i}: {value>>i:08b} -> {value>>i&1}")
         GPIO.output(pin, value>>i&1)
+        if pin == chan_list[-2]:
+            GPIO.output(chan_list[-1], 1)
+            GPIO.output(chan_list[-1], 0)
 
 try:
     write_byte(0x00)
