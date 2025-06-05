@@ -10,8 +10,8 @@ set_io RPI_IO[6]    C9
 set_io RPI_IO[7]   C10
 
 set_io write_strobe	K11
-set_io LED1 	C8
-set_io LED2 	F7
+set_io LED[0] 	C8
+set_io LED[1] 	F7
 
 set_io pmod1_1    D8
 set_io pmod1_2    B9

@@ -24,17 +24,13 @@ def write_byte(value):
             GPIO.output(chan_list[-1], 0)
 
 try:
-    write_byte(0x00)
-    time.sleep(2)
-
-    write_byte(0xFF)
-    time.sleep(2)
-    
-#    write_byte(0x55)
-#    time.sleep(2)
-
-#    write_byte(0xAA)
-#   time.sleep(2)
-
+    while(True):
+        input_str = input("Enter hex (q to quit): ")
+        if (input_str == 'q'):
+            break
+        integer = int(input_str, 16) 
+        write_byte(integer)
+        time.sleep(2)
+        
 finally:
     GPIO.cleanup()
