@@ -1,0 +1,10 @@
+set_io pi_clk		H11
+set_io ico_clk		R9
+set_io SEL		D4
+set_io MOSI		A6
+set_io MISO		A7
+set_io LED		K9
+set_io pmod_sel		B11		
+set_io pmod_MOSI	A10
+set_io pmod_MISO	B9	
+set_io pmod_piclk	B8
