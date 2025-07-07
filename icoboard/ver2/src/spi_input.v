@@ -7,7 +7,11 @@ module spi_input (
 	output wire pmod_sel,
 	output wire pmod_MOSI,
 	output wire pmod_MISO,
-	output wire pmod_piclk
+	output wire pmod_piclk,
+  output wire gpio4,
+  output wire gpio17,
+  output wire gpio27,
+  output wire gpio22
 );
 
 	reg [2:0] sync_clk = 3'b000; always @(posedge ico_clk) sync_clk <= {sync_clk[1:0], pi_clk};
@@ -31,12 +35,16 @@ module spi_input (
 	end
 
 	reg [7:0] byte_data_send = 8'b0;
+  reg [7:0] message = 8'b0;
 	wire ready_to_send = (bit_count == 4'b1000 && ~pi_clk);
 	always @(posedge ico_clk) begin
 		if (~SEL_active) byte_data_send <= 8'b0;
 		else begin
-			if (ready_to_send) byte_data_send <= byte_data_received;
-			if (sync_clk_falling && bit_count >= 4'b1000) byte_data_send <= {byte_data_send, 1'b0};
+      if (ready_to_send) begin
+        byte_data_send <= byte_data_received;
+        message <= byte_data_received;
+      end
+			if (sync_clk_falling && bit_count >= 4'b1000) byte_data_send <= {byte_data_send[6:0], 1'b0};
 		end
 	end
 
@@ -45,5 +53,9 @@ module spi_input (
 	assign pmod_MOSI = MOSI;
 	assign pmod_MISO = MISO;
 	assign pmod_piclk = pi_clk;
+  assign gpio4 = message[0];
+  assign gpio17 = message[1];
+  assign gpio27 = message[2];
+  assign gpio22 = message[3];
 
 endmodule
