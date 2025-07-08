@@ -8,10 +8,10 @@ module spi_input (
 	output wire pmod_MOSI,
 	output wire pmod_MISO,
 	output wire pmod_piclk,
-  output wire gpio4,
-  output wire gpio17,
-  output wire gpio27,
-  output wire gpio22
+	output wire rpi_io7,
+	output wire rpi_io8,
+	output wire rpi_io9,
+	output wire rpi_io10
 );
 
 	reg [2:0] sync_clk = 3'b000; always @(posedge ico_clk) sync_clk <= {sync_clk[1:0], pi_clk};
@@ -53,9 +53,9 @@ module spi_input (
 	assign pmod_MOSI = MOSI;
 	assign pmod_MISO = MISO;
 	assign pmod_piclk = pi_clk;
-  assign gpio4 = message[0];
-  assign gpio17 = message[1];
-  assign gpio27 = message[2];
-  assign gpio22 = message[3];
+	assign rpi_io7 = message[0];
+	assign rpi_io8 = message[1];
+	assign rpi_io9 = message[2];
+	assign rpi_io10 = message[3];
 
 endmodule

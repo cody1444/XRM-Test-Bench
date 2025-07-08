@@ -3,8 +3,11 @@ set_io ico_clk		R9
 set_io SEL		D4
 set_io MOSI		A6
 set_io MISO		A7
-set_io LED		K9
 set_io pmod_sel		B11		
 set_io pmod_MOSI	A10
 set_io pmod_MISO	B9	
 set_io pmod_piclk	B8
+set_io rpi_io7		D7
+set_io rpi_io8		D9
+set_io rpi_io9		C9
+set_io rpi_io10		C10
