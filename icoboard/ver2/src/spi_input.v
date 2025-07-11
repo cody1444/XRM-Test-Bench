@@ -4,6 +4,8 @@ module spi_input (
 	input SEL,
 	input MOSI,
 	output MISO,
+	output reg [63:0] output_pin,
+	output wire pmod_sync,
 	output wire pmod_sel,
 	output wire pmod_MOSI,
 	output wire pmod_MISO,
@@ -49,6 +51,21 @@ module spi_input (
 		end
 	end
 
+	reg sync = 0; reg [1:0] rd_addr = 0;
+	always @(posedge ico_clk) begin
+		sync <= 0;
+		if (rd_addr < 2'b11) rd_addr <= rd_addr + 1'b1;
+		else begin
+			rd_addr <= 0;
+			sync <= 1;
+		end
+		output_pin[0:15]  <= {16{mem[0][rd_addr]}};
+		output_pin[31:16] <= {16{mem[1][rd_addr]}};
+		output_pin[47:32] <= {16{mem[2][rd_addr]}};
+		output_pin[63:48] <= {16{mem[3][rd_addr]}};
+	end
+
+	assign pmod_sync = sync;
 	assign MISO = byte_data_send[7];
 	assign pmod_sel = SEL;
 	assign pmod_MOSI = MOSI;
