@@ -3,77 +3,80 @@ module spi_input (
 	input ico_clk,
 	input SEL,
 	input MOSI,
+	//output reg [63:0] output_pin,
+	//output wire pmod_sync,
 	output MISO,
-	output reg [63:0] output_pin,
-	output wire pmod_sync,
 	output wire pmod_sel,
 	output wire pmod_MOSI,
-	output wire pmod_MISO,
-	output wire pmod_piclk,
-	output wire rpi_io7,
-	output wire rpi_io8,
-	output wire rpi_io9,
-	output wire rpi_io10
+	output wire pmod_piclk
 );
 
-	reg [2:0] sync_clk = 3'b000; always @(posedge ico_clk) sync_clk <= {sync_clk[1:0], pi_clk};
-	wire sync_clk_rising = (sync_clk[2:1] == 2'b01); wire sync_clk_falling = (sync_clk[2:1] == 2'b10);
+	// ---- synchronize clocks----
+	reg [2:0] sync_clk = 3'b000; 
+	always @(posedge ico_clk) sync_clk <= {sync_clk[1:0], pi_clk};
+	wire sync_clk_rising = (sync_clk[2:1] == 2'b01);
+	wire sync_clk_falling = (sync_clk[2:1] == 2'b10);
 
-	reg [2:0] SELr = 3'b111; always @(posedge ico_clk) SELr <= {SELr[1:0], SEL};
+	// ---- sample chip select (CS) ----
+	reg [1:0] SELr = 2'b11;
+	always @(posedge ico_clk) SELr <= {SELr[0], SEL};
 	wire SEL_active = ~SELr[1];
+	wire cs_start = (SELr[1:0]==2'b10);
+	wire cs_end = (SELr[1:0]==2'b01);
 
-	reg [1:0] MOSIr = 2'b0; always @(posedge ico_clk) MOSIr = {MOSIr[0], MOSI};
+	// ---- sample MOSI ----
+	reg [1:0] MOSIr = 2'b0;
+	always @(posedge ico_clk) MOSIr <= {MOSIr[0], MOSI};
 	wire MOSI_data = MOSIr[1];
 
-	reg [3:0] bit_count = 4'b0; reg [7:0] byte_data_received = 8'b0;	
-	always @(posedge ico_clk) begin
-		if (~SEL_active) bit_count <= 4'b0;
-		else begin
-			if (sync_clk_rising) begin
-				bit_count <= bit_count + 1;
-				byte_data_received <= {byte_data_received[6:0], MOSI_data};
-			end
+	// ---- MOSI line processing ---- 
+	reg  [3:0] bit_count = 4'b0;
+	reg [15:0] MESSAGEr = 16'b0;
+	reg  [7:0] mem [0:63];
+
+	wire bit_received = SEL_active && sync_clk_rising; 
+	wire [15:0] message_now = {MESSAGEr[14:0], MOSI_data};
+
+	always @(posedge ico_clk) begin 
+		if (cs_start) begin
+			bit_count <= 4'd0;
+			MESSAGEr <= 16'd0;
+		end else if (SEL_active) begin 
+			if (bit_received) begin 
+				MESSAGEr <= message_now;
+				bit_count <= bit_count + 4'd1; 
+			end 
 		end
 	end
+	
+	reg [7:0] MISOr = 8'd0;
+	wire received_full_message_from_MOSI = bit_received && (bit_count == 4'd15);
 
-	reg [7:0] byte_data_send = 8'b0; reg [7:0] message = 8'b0; reg [3:0] mem [0:3];
-	wire ready_to_send = (bit_count == 4'b1000);
 	always @(posedge ico_clk) begin
-		if (~SEL_active) byte_data_send <= 8'b0;
-		else begin
-			if (ready_to_send) begin
-				byte_data_send <= byte_data_received;
-				message <= byte_data_received;
-				if (byte_data_received[5:4] == 2'b00) mem[byte_data_received[7:6]] <= byte_data_received[3:0];
-				if (byte_data_received[5:4] == 2'b01) byte_data_send <= mem[byte_data_received[7:6]];
-			end
-			if (sync_clk_falling && bit_count >= 4'b1000) byte_data_send <= {byte_data_send[6:0], 1'b0};
+		if (received_full_message_from_MOSI) begin
+			if (message_now[9:8] == 2'b00) mem[message_now[15:10]] <= message_now[7:0];
+			if (message_now[9:8] == 2'b01) MISOr <= mem[message_now[15:10]];
 		end
+		if (SEL_active && sync_clk_falling && bit_count >= 4'b1000) MISOr <= {MISOr[6:0], 1'b0};
 	end
 
-	reg sync = 0; reg [1:0] rd_addr = 0;
-	always @(posedge ico_clk) begin
-		sync <= 0;
-		if (rd_addr < 2'b11) rd_addr <= rd_addr + 1'b1;
-		else begin
-			rd_addr <= 0;
-			sync <= 1;
-		end
-		output_pin[0:15]  <= {16{mem[0][rd_addr]}};
-		output_pin[31:16] <= {16{mem[1][rd_addr]}};
-		output_pin[47:32] <= {16{mem[2][rd_addr]}};
-		output_pin[63:48] <= {16{mem[3][rd_addr]}};
-	end
+	// ---- output pin control ----
+	//reg sync = 0;
+	//reg [5:0] rd_addr = 6'd0;
+	//always @(posedge ico_clk) begin
+	//	sync <= 0;
+	//	if (rd_addr < 6'd63) rd_addr <= rd_addr + 6'd1;
+	//	else begin
+	//		rd_addr <= 0;
+	//		sync <= 1;
+	//	end
+	//	output_pin[rd_addr]  <= 1'b0;
+	//end
 
-	assign pmod_sync = sync;
-	assign MISO = byte_data_send[7];
+	//assign pmod_sync = sync;
+	assign MISO = MISOr[7]; 
 	assign pmod_sel = SEL;
 	assign pmod_MOSI = MOSI;
-	assign pmod_MISO = MISO;
 	assign pmod_piclk = pi_clk;
-	assign rpi_io7 = mem[0][0];
-	assign rpi_io8 = mem[0][1];
-	assign rpi_io9 = mem[0][2];
-	assign rpi_io10 = mem[0][3];
 
 endmodule
