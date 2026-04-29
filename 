@@ -1,0 +1,23 @@
+*[33m-[m[33m.[m   [33m5f3b950[m[33m ([m[1;35mrefs/stash[m[33m)[m On cody/spi_input-changes: save all local changes
+[31m|[m[32m\[m [33m\[m  
+[31m|[m [32m|[m * [33md540e7e[m untracked files on cody/spi_input-changes: e824ddd connected output pins
+[31m|[m * [33m7f39401[m index on cody/spi_input-changes: e824ddd connected output pins
+[31m|[m[31m/[m  
+[31m|[m * [33md2b1d8a[m[33m ([m[1;36mHEAD -> [m[1;32mcody/spi_input-changes[m[33m, [m[1;31morigin/cody/spi_input-changes[m[33m)[m Update spi_input.v to support 16-bit messages
+[31m|[m * [33md77abd4[m[33m ([m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m)[m Added file for testbench code
+[31m|[m[31m/[m  
+* [33me824ddd[m[33m ([m[1;32moutput-test[m[33m, [m[1;32mmain[m[33m)[m connected output pins
+* [33mbb8f531[m[33m ([m[1;31morigin/decode-module[m[33m, [m[1;32mdecode-module[m[33m)[m implemented memory write&read
+* [33m68c99a6[m[33m ([m[1;32mtest-shift-fix[m[33m)[m Forgot to modify pcf
+* [33m61cac18[m Test shift fix: corrected byte_data_send logic and added gpio outputs to verify without using a scope
+* [33mf8215bc[m tidied up spi and it works!
+* [33mf7934d9[m added almost working spi code
+* [33m14c5a8f[m fixed some bugs
+* [33m558fdef[m Matt was here
+* [33m0080903[m fixed bugs for 2 state, working now
+* [33m4130105[m 2 states
+* [33m7557e2d[m started synchronous design
+* [33mb201096[m pin output test
+* [33m746624f[m make gpio pins do something interesting
+* [33m34168c8[m removed file
+* [33m1928729[m Removed file

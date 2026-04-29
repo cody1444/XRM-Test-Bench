@@ -5,59 +5,64 @@ module spi_input (
 	input MOSI,
 	//output reg [63:0] output_pin,
 	//output wire pmod_sync,
-	output MISO,
+	output LED,
+	output wire pmod_MISO,
 	output wire pmod_sel,
 	output wire pmod_MOSI,
 	output wire pmod_piclk
 );
 
 	// ---- synchronize clocks----
-	reg [2:0] sync_clk = 3'b000; 
+	reg [2:0] sync_clk = 3'd0; 
 	always @(posedge ico_clk) sync_clk <= {sync_clk[1:0], pi_clk};
+
 	wire sync_clk_rising = (sync_clk[2:1] == 2'b01);
 	wire sync_clk_falling = (sync_clk[2:1] == 2'b10);
 
-	// ---- sample chip select (CS) ----
+	// ---- sample ACTIVE LOW chip select (CS) ----
 	reg [1:0] SELr = 2'b11;
 	always @(posedge ico_clk) SELr <= {SELr[0], SEL};
+
 	wire SEL_active = ~SELr[1];
 	wire cs_start = (SELr[1:0]==2'b10);
 	wire cs_end = (SELr[1:0]==2'b01);
 
 	// ---- sample MOSI ----
-	reg [1:0] MOSIr = 2'b0;
+	reg [1:0] MOSIr = 2'd0;
 	always @(posedge ico_clk) MOSIr <= {MOSIr[0], MOSI};
-	wire MOSI_data = MOSIr[1];
+
+	wire MOSI_sample = MOSIr[1];
 
 	// ---- MOSI line processing ---- 
-	reg  [3:0] bit_count = 4'b0;
-	reg [15:0] MESSAGEr = 16'b0;
-	reg  [7:0] mem [0:63];
+	reg [4:0]  bit_count = 5'd0;
+	reg [15:0] SHIFTr = 16'd0;
+	reg [7:0]  MISOr = 8'd0;
+	reg [7:0]  mem [0:63];
+	reg led = 1'd0;
 
 	wire bit_received = SEL_active && sync_clk_rising; 
-	wire [15:0] message_now = {MESSAGEr[14:0], MOSI_data};
+	wire word_done = bit_received && (bit_count == 5'd15);
+	wire [15:0] full_word = {SHIFTr[14:0], MOSI_sample};
 
 	always @(posedge ico_clk) begin 
 		if (cs_start) begin
-			bit_count <= 4'd0;
-			MESSAGEr <= 16'd0;
-		end else if (SEL_active) begin 
-			if (bit_received) begin 
-				MESSAGEr <= message_now;
-				bit_count <= bit_count + 4'd1; 
-			end 
+			led <= 1'd0;
+			bit_count <= 5'd0;
+			SHIFTr <= 16'd0;
+			MISOr <= 8'd0;
+		end else if (bit_received) begin 
+			bit_count <= bit_count + 5'd1; 
+			SHIFTr <= {SHIFTr[14:0], MOSI_sample};
+			
+			if (word_done && full_word[9:8] == 2'b00) begin
+				mem[full_word[15:10]] <= full_word[7:0];
+			end else if (word_done && full_word[9:8] == 2'b01) begin
+				//led <= 1'd1;
+				MISOr <= mem[full_word[15:10]];
+			end
 		end
-	end
-	
-	reg [7:0] MISOr = 8'd0;
-	wire received_full_message_from_MOSI = bit_received && (bit_count == 4'd15);
 
-	always @(posedge ico_clk) begin
-		if (received_full_message_from_MOSI) begin
-			if (message_now[9:8] == 2'b00) mem[message_now[15:10]] <= message_now[7:0];
-			if (message_now[9:8] == 2'b01) MISOr <= mem[message_now[15:10]];
-		end
-		if (SEL_active && sync_clk_falling && bit_count >= 4'b1000) MISOr <= {MISOr[6:0], 1'b0};
+		if (SEL_active && sync_clk_falling && bit_count > 5'd8) MISOr <= {MISOr[6:0], 1'b0};
 	end
 
 	// ---- output pin control ----
@@ -74,9 +79,11 @@ module spi_input (
 	//end
 
 	//assign pmod_sync = sync;
-	assign MISO = MISOr[7]; 
+	assign pmod_MISO = MISOr[7]; 
 	assign pmod_sel = SEL;
 	assign pmod_MOSI = MOSI;
 	assign pmod_piclk = pi_clk;
+	assign LED = led;
+	//assign LED2 = led2;
 
 endmodule
